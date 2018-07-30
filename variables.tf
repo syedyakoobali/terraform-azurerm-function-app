@@ -2,9 +2,9 @@ variable "resource_group_name" {
   description = "The resource group where the resources should be created."
 }
 
-variable "azure_location" {
+variable "location" {
   default     = "westeurope"
-  description = "The location where the resources should be created."
+  description = "The azure datacenter location where the resources should be created."
 }
 
 variable "function_app_name" {
