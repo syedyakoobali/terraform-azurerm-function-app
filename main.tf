@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "funcsta" {
-  name                     = "${replace("${lower(("${var.function_app_name}${var.environment}funcsta"))}", "-","")}"
+  name                     = "${local.storage_account_name}"
   resource_group_name      = "${var.resource_group_name}"
   location                 = "${var.location}"
   account_tier             = "Standard"
@@ -12,7 +12,7 @@ resource "azurerm_storage_account" "funcsta" {
 }
 
 resource "azurerm_app_service_plan" "serviceplan" {
-  name                = "${var.function_app_name}-${var.environment}-plan"
+  name                = "${local.app_service_plan_name}"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 
@@ -25,7 +25,7 @@ resource "azurerm_app_service_plan" "serviceplan" {
 }
 
 resource "azurerm_function_app" "functionapp" {
-  name                      = "${var.function_app_name}-${var.environment}-func"
+  name                      = "${local.function_app_name}"
   location                  = "${var.location}"
   resource_group_name       = "${var.resource_group_name}"
   app_service_plan_id       = "${azurerm_app_service_plan.serviceplan.id}"
@@ -52,7 +52,7 @@ resource "azurerm_function_app" "functionapp" {
 }
 
 resource "azurerm_autoscale_setting" "app_service_auto_scale" {
-  name                = "${var.function_app_name}-${var.environment}-autoscale"
+  name                = "${local.autoscale_settings_name}"
   resource_group_name = "${var.resource_group_name}"
   location            = "${var.location}"
   target_resource_id  = "${azurerm_app_service_plan.serviceplan.id}"
