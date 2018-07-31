@@ -31,7 +31,7 @@ resource "azurerm_function_app" "functionapp" {
   app_service_plan_id       = "${azurerm_app_service_plan.serviceplan.id}"
   storage_connection_string = "${azurerm_storage_account.funcsta.primary_connection_string}"
   https_only                = true
-  version                   = "${var.function_verion}"
+  version                   = "${var.function_version}"
   client_affinity_enabled   = false
 
   tags = "${merge(var.tags, map("environment", var.environment), map("release", var.release))}"
@@ -63,7 +63,7 @@ resource "azurerm_autoscale_setting" "app_service_auto_scale" {
     capacity {
       default = 1
       minimum = 1
-      maximum = 10
+      maximum = "${azurerm_app_service_plan.serviceplan.maximum_number_of_workers}"
     }
 
     rule {

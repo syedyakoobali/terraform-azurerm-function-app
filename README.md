@@ -4,6 +4,13 @@
 
 This terraform module deploys a Function App on dedicated app service plan, with autoscaling, in Azure.
 
+Installs following resources
+- Storage account
+- App service plan
+- Function app
+- Auto scale settings for app service plan. 
+
+
 ## Usage
 
 ```hcl

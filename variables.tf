@@ -28,7 +28,7 @@ variable "release" {
   description = "The release the deploy is based on"
 }
 
-variable "function_verion" {
+variable "function_version" {
   default     = "beta"
   description = "The runtime version the function app should have."
 }
