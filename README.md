@@ -21,12 +21,13 @@ resource "azurerm_resource_group" "image_resizer" {
 }
 
 module "function_app" {
-  source              = "github.com/innovationnorway/terraform-azurerm-function-app"
+  source              = "innovationnorway/function_app/azurerm"
   function_app_name   = "image-resizer-func"
   resource_group_name = "${azurerm_resource_group.image_resizer.name}"
   location            = "${azurerm_resource_group.image_resizer.location}"
   environment         = "lab"
   function_verion     = "beta"
+  release             = "release 2018-07-21.001"
   
   app_settings {
     "FUNCTIONS_WORKER_RUNTIME" = "dotnet"
@@ -34,8 +35,44 @@ module "function_app" {
 
   tags {
       a       = "b",
-      release = "release 2018-07-21.001"
+      project = "image-resizing"
   }
 }
 
 ```
+
+## Inputs
+
+### resource_group_name
+The resource group where the resources should be created.
+
+### location
+The azure datacenter location where the resources should be created.
+
+### function_app_name
+The name for the function app. Without environment naming.
+
+### app_settings
+Application settings to insert on creating the function app. Following updates will be ignored, and has to be set manually. Updates done on application deploy or in portal will not affect terraform state file.
+
+### tags
+A map of tags to add to all resources
+Defaults to "westeurope"
+ 
+### tags
+A map of tags to add to all resources. Release and Environment will be auto tagged. 
+
+### environment
+The environment where the infrastructure is deployed.
+
+### release
+The release the deploy is based on
+
+### function_version
+The runtime version the function app should have.
+Defaults to "beta"
+
+## Outputs
+
+### identity
+The MSI identities set on the function app. Returns a list of identities.
