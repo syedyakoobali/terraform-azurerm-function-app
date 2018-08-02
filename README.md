@@ -21,13 +21,14 @@ resource "azurerm_resource_group" "image_resizer" {
 }
 
 module "function_app" {
-  source              = "innovationnorway/function_app/azurerm"
-  function_app_name   = "image-resizer-func"
-  resource_group_name = "${azurerm_resource_group.image_resizer.name}"
-  location            = "${azurerm_resource_group.image_resizer.location}"
-  environment         = "lab"
-  function_verion     = "beta"
-  release             = "release 2018-07-21.001"
+  source                   = "innovationnorway/function-app/azurerm"
+  function_app_name        = "image-resizer-func"
+  resource_group_name      = "${azurerm_resource_group.image_resizer.name}"
+  location                 = "${azurerm_resource_group.image_resizer.location}"
+  environment              = "lab"
+  function_verion          = "beta"
+  release                  = "release 2018-07-21.001"
+  account_replication_type = "LRS"
   
   app_settings {
     "FUNCTIONS_WORKER_RUNTIME" = "dotnet"
@@ -51,6 +52,10 @@ The azure datacenter location where the resources should be created.
 
 ### function_app_name
 The name for the function app. Without environment naming.
+
+### account_replication_type
+The Storage Account replication type. See azurerm_storage_account module for posible values.
+Defaults to "LRS"
 
 ### app_settings
 Application settings to insert on creating the function app. Following updates will be ignored, and has to be set manually. Updates done on application deploy or in portal will not affect terraform state file.
