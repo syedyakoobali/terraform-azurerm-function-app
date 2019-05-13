@@ -68,8 +68,4 @@ resource "azurerm_function_app" "main" {
   }
 
   app_settings = var.app_settings
-
-  lifecycle {
-    ignore_changes = [app_settings]
-  }
 }
