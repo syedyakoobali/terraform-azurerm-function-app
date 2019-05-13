@@ -1,25 +1,26 @@
-resource "azurerm_storage_account" "main" {
-  name                     = local.storage_account_name
-  resource_group_name      = var.resource_group_name
-  location                 = var.location
-  account_tier             = "Standard"
-  account_replication_type = var.account_replication_type
-  enable_blob_encryption   = "true"
-  enable_file_encryption   = "true"
-
-  tags = merge(
-    var.tags,
-    {
-      "environment" = var.environment
-    },
-    {
-      "release" = var.release
-    },
+locals {
+  storage_account_name = replace(
+    lower(substr(var.name, 0, min(18, length(var.name)))),
+    "/[^a-z0-9]/",
+    "",
   )
 }
 
+resource "random_id" "main" {
+  byte_length = 2
+}
+
+resource "azurerm_storage_account" "main" {
+  name                     = format("%s%s", local.storage_account_name, random_id.main.hex)
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  account_tier             = "Standard"
+  account_replication_type = "RAGRS"
+  tags                     = var.tags
+}
+
 resource "azurerm_app_service_plan" "main" {
-  name                = local.app_service_plan_name
+  name                = format("%s-plan", var.name)
   location            = var.location
   resource_group_name = var.resource_group_name
 
@@ -28,39 +29,21 @@ resource "azurerm_app_service_plan" "main" {
     size = "S1"
   }
 
-  tags = merge(
-    var.tags,
-    {
-      "environment" = var.environment
-    },
-    {
-      "release" = var.release
-    },
-  )
+  tags = var.tags
 }
 
 resource "azurerm_function_app" "main" {
-  name                      = local.function_app_name
+  name                      = var.name
   location                  = var.location
   resource_group_name       = var.resource_group_name
   app_service_plan_id       = azurerm_app_service_plan.main.id
   storage_connection_string = azurerm_storage_account.main.primary_connection_string
-  https_only                = true
-  version                   = var.function_version
-  client_affinity_enabled   = false
-
-  tags = merge(
-    var.tags,
-    {
-      "environment" = var.environment
-    },
-    {
-      "release" = var.release
-    },
-  )
+  https_only                = var.https_only
+  version                   = var.runtime_version
+  client_affinity_enabled   = var.client_affinity_enabled
 
   site_config {
-    always_on = true
+    always_on = var.always_on
   }
 
   identity {
@@ -68,4 +51,6 @@ resource "azurerm_function_app" "main" {
   }
 
   app_settings = var.app_settings
+
+  tags = var.tags
 }
