@@ -1,4 +1,4 @@
-resource "azurerm_storage_account" "funcsta" {
+resource "azurerm_storage_account" "main" {
   name                     = local.storage_account_name
   resource_group_name      = var.resource_group_name
   location                 = var.location
@@ -18,7 +18,7 @@ resource "azurerm_storage_account" "funcsta" {
   )
 }
 
-resource "azurerm_app_service_plan" "serviceplan" {
+resource "azurerm_app_service_plan" "main" {
   name                = local.app_service_plan_name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -39,12 +39,12 @@ resource "azurerm_app_service_plan" "serviceplan" {
   )
 }
 
-resource "azurerm_function_app" "functionapp" {
+resource "azurerm_function_app" "main" {
   name                      = local.function_app_name
   location                  = var.location
   resource_group_name       = var.resource_group_name
-  app_service_plan_id       = azurerm_app_service_plan.serviceplan.id
-  storage_connection_string = azurerm_storage_account.funcsta.primary_connection_string
+  app_service_plan_id       = azurerm_app_service_plan.main.id
+  storage_connection_string = azurerm_storage_account.main.primary_connection_string
   https_only                = true
   version                   = var.function_version
   client_affinity_enabled   = false
