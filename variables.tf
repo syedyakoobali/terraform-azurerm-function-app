@@ -13,6 +13,18 @@ variable "name" {
   description = "The name for the function app. Without environment naming."
 }
 
+variable "app_service_plan_id" {
+  type        = string
+  default     = ""
+  description = "The ID of an existing app service plan to use for the Function App."
+}
+
+variable "sku" {
+  type        = string
+  default     = "Basic_B1"
+  description = "The SKU of an app service plan to create for the Function App."
+}
+
 variable "runtime_version" {
   default     = "~2"
   description = "The runtime version the function app should have."
