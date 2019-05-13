@@ -22,16 +22,18 @@ variable "account_replication_type" {
 }
 
 variable "app_settings" {
-  default     = {}
-  type        = "map"
+  default = {
+  }
+  type        = map(string)
   description = "Application settings to insert on creating the function app. Following updates will be ignored, and has to be set manually. Updates done on application deploy or in portal will not affect terraform state file."
 }
 
 variable "tags" {
   description = "A map of tags to add to all resources"
-  type        = "map"
+  type        = map(string)
 
-  default = {}
+  default = {
+  }
 }
 
 variable "environment" {
@@ -43,3 +45,4 @@ variable "release" {
   default     = ""
   description = "The release the deploy is based on."
 }
+
